@@ -24,6 +24,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Select from "@/components/Select";
 import {
   ALLOWED_CV_TYPES,
   MAX_CV_SIZE_MB,
@@ -281,20 +282,20 @@ export default function LamarForm() {
             name="status_pernikahan_pelamar"
             icon={Heart}
           >
-            <select
-              className="input-field"
+            <Select
               value={state.status_pernikahan_pelamar}
-              onChange={(e) =>
+              onChange={(val) =>
                 update(
                   "status_pernikahan_pelamar",
-                  e.target.value as FormState["status_pernikahan_pelamar"],
+                  val as FormState["status_pernikahan_pelamar"],
                 )
               }
-            >
-              <option value="">— Pilih —</option>
-              <option value="Belum Berkeluarga">Belum Berkeluarga</option>
-              <option value="Berkeluarga">Berkeluarga</option>
-            </select>
+              options={[
+                { value: "Belum Berkeluarga", label: "Belum Berkeluarga" },
+                { value: "Berkeluarga", label: "Berkeluarga" },
+              ]}
+              placeholder="— Pilih status —"
+            />
           </Field>
         </div>
 
@@ -349,16 +350,13 @@ export default function LamarForm() {
             name="pendidikan_terakhir"
             error={errors.pendidikan_terakhir}
           >
-            <select
-              className={cn("input-field", errors.pendidikan_terakhir && "has-error")}
+            <Select
               value={state.pendidikan_terakhir}
-              onChange={(e) => update("pendidikan_terakhir", e.target.value)}
-            >
-              <option value="">— Pilih pendidikan —</option>
-              {PENDIDIKAN_OPTIONS.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
+              onChange={(val) => update("pendidikan_terakhir", val)}
+              options={PENDIDIKAN_OPTIONS.map((p) => ({ value: p, label: p }))}
+              placeholder="— Pilih pendidikan —"
+              hasError={!!errors.pendidikan_terakhir}
+            />
           </Field>
 
           <Field
@@ -368,16 +366,13 @@ export default function LamarForm() {
             error={errors.posisi_dilamar}
             icon={Briefcase}
           >
-            <select
-              className={cn("input-field", errors.posisi_dilamar && "has-error")}
+            <Select
               value={state.posisi_dilamar}
-              onChange={(e) => update("posisi_dilamar", e.target.value)}
-            >
-              <option value="">— Pilih posisi —</option>
-              {POSISI_OPTIONS.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
+              onChange={(val) => update("posisi_dilamar", val)}
+              options={POSISI_OPTIONS.map((p) => ({ value: p, label: p }))}
+              placeholder="— Pilih posisi —"
+              hasError={!!errors.posisi_dilamar}
+            />
           </Field>
         </div>
       </FormSection>
@@ -459,16 +454,12 @@ export default function LamarForm() {
         </Field>
 
         <Field label="SIM yang Dimiliki" name="sim" icon={IdCard}>
-          <select
-            className="input-field"
+          <Select
             value={state.sim}
-            onChange={(e) => update("sim", e.target.value)}
-          >
-            <option value="">— Pilih jenis SIM —</option>
-            {SIM_OPTIONS.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+            onChange={(val) => update("sim", val)}
+            options={SIM_OPTIONS.map((s) => ({ value: s, label: s === "Tidak Ada" ? s : `SIM ${s}` }))}
+            placeholder="— Pilih jenis SIM —"
+          />
         </Field>
 
         <Field
