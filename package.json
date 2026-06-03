@@ -28,5 +28,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.97.0"
+  },
+  "overrides": {
+    "next": "16.2.4"
   }
 }
