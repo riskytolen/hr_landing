@@ -19,7 +19,7 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[#09090b]" />
         <div className="absolute -top-40 left-1/4 w-[400px] h-[400px] rounded-full bg-emerald-500/[0.06] blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-amber-500/[0.05] blur-[100px]" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-blue-800/[0.06] blur-[100px]" />
       </div>
 
       <div className="relative max-w-md w-full">
@@ -30,8 +30,8 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
             {/* Icon */}
             <div className="relative w-18 h-18 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 mx-auto mb-6 flex items-center justify-center shadow-lg shadow-emerald-500/30" style={{ width: "72px", height: "72px" }}>
               <CheckCircle2 className="w-9 h-9 text-white" strokeWidth={2.5} />
-              <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-amber-900" />
+              <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                <Sparkles className="w-3.5 h-3.5 text-blue-100" />
               </span>
             </div>
 
@@ -56,27 +56,27 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
                 <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
                   Kode Referensi
                 </p>
-                <p className="text-lg font-mono font-bold text-amber-400 tabular-nums">{refCode}</p>
+                <p className="text-lg font-mono font-bold text-blue-400 tabular-nums">{refCode}</p>
               </div>
             )}
 
             {/* Next steps */}
             <div className="text-left bg-zinc-800/30 border border-zinc-800 rounded-xl p-4 mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Mail className="w-4 h-4 text-amber-400" />
+                <Mail className="w-4 h-4 text-blue-400" />
                 <p className="text-[12px] font-bold text-white">Langkah Selanjutnya</p>
               </div>
               <ul className="space-y-2 text-[12px] text-zinc-400">
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-0.5 flex-shrink-0">1.</span>
+                  <span className="text-blue-400 mt-0.5 flex-shrink-0">1.</span>
                   Tim HR akan meninjau berkas Anda dalam beberapa hari kerja.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-0.5 flex-shrink-0">2.</span>
+                  <span className="text-blue-400 mt-0.5 flex-shrink-0">2.</span>
                   Jika lolos seleksi awal, kami akan menghubungi via WhatsApp ke nomor yang Anda daftarkan.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-0.5 flex-shrink-0">3.</span>
+                  <span className="text-blue-400 mt-0.5 flex-shrink-0">3.</span>
                   Pastikan nomor HP Anda aktif dan dapat dihubungi.
                 </li>
               </ul>

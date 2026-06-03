@@ -142,7 +142,7 @@ export default function Select({
           !selected && "text-white/40",
           disabled && "opacity-50 cursor-not-allowed",
           hasError && "has-error",
-          open && "border-amber-500/40 bg-amber-500/[0.04]",
+          open && "border-blue-700/40 bg-blue-700/[0.06]",
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -158,7 +158,7 @@ export default function Select({
         <ChevronDown
           className={cn(
             "w-4 h-4 flex-shrink-0 text-white/40 transition-transform duration-200",
-            open && "rotate-180 text-amber-400",
+            open && "rotate-180 text-blue-400",
           )}
         />
       </button>
@@ -212,9 +212,9 @@ export default function Select({
                     aria-selected={isSelected}
                     className={cn(
                       "w-full flex items-center justify-between gap-2 px-3 py-2.5 text-sm text-left transition-colors",
-                      isHighlighted && "bg-amber-500/10",
+                      isHighlighted && "bg-blue-700/20",
                       isSelected
-                        ? "text-amber-300 font-semibold"
+                        ? "text-blue-300 font-semibold"
                         : "text-zinc-300",
                     )}
                   >
@@ -227,7 +227,7 @@ export default function Select({
                       )}
                     </div>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 flex-shrink-0 text-amber-400" />
+                      <Check className="w-3.5 h-3.5 flex-shrink-0 text-blue-400" />
                     )}
                   </button>
                 );

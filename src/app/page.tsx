@@ -20,9 +20,9 @@ export default function LandingPage() {
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[#09090b]" />
         {/* Ambient orbs - smaller for mobile perf */}
-        <div className="absolute -top-32 -left-32 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-amber-500/[0.07] blur-[100px]" />
+        <div className="absolute -top-32 -left-32 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-blue-800/[0.12] blur-[100px]" />
         <div className="absolute top-1/2 -right-40 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] rounded-full bg-indigo-500/[0.05] blur-[100px]" />
-        <div className="absolute bottom-0 left-1/3 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
+        <div className="absolute bottom-0 left-1/3 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-blue-800/[0.08] blur-[120px]" />
         {/* Subtle noise grain */}
         <div className="absolute inset-0 opacity-[0.015]" style={{
           backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
@@ -34,19 +34,19 @@ export default function LandingPage() {
       <nav className="relative px-5 sm:px-8 pt-6 pb-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-blue-700/15 ring-1 ring-blue-700/25 flex items-center justify-center">
               <Image src="/logo.png" alt="Jamslogistic" width={22} height={22} className="object-contain" />
             </div>
             <div>
               <p className="text-sm font-bold text-white leading-none">Jamslogistic</p>
-              <p className="text-[9px] font-semibold text-amber-400/60 tracking-[0.25em] uppercase mt-0.5">
+              <p className="text-[9px] font-semibold text-blue-400/60 tracking-[0.25em] uppercase mt-0.5">
                 Karir
               </p>
             </div>
           </div>
           <a
             href="#form"
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold hover:bg-amber-500/15 transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-700/15 border border-blue-700/25 text-blue-300 text-xs font-semibold hover:bg-blue-700/20 transition-colors"
           >
             <Sparkles className="w-3 h-3" />
             Lamar Sekarang
@@ -60,8 +60,8 @@ export default function LandingPage() {
           <div className="max-w-2xl">
             {/* Badge */}
             <div className="animate-fade-in">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-700/15 border border-blue-700/25 text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 Lowongan Terbuka
               </span>
             </div>
@@ -71,7 +71,7 @@ export default function LandingPage() {
               Bangun Karir Anda
               <br />
               Bersama{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-500">
                 Jamslogistic.
               </span>
             </h1>
@@ -86,7 +86,7 @@ export default function LandingPage() {
             <div className="animate-fade-in delay-300 flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-12 sm:mb-16">
               <a
                 href="#form"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-900 text-sm font-bold shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 text-white text-sm font-bold shadow-lg shadow-blue-800/30 hover:shadow-xl hover:shadow-blue-800/40 transition-all hover:-translate-y-0.5"
               >
                 Daftar Sekarang
                 <ArrowDown className="w-4 h-4" />
@@ -112,8 +112,8 @@ export default function LandingPage() {
       <section className="relative px-5 sm:px-8 pb-16 sm:pb-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-2 mb-6">
-            <ShieldCheck className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+            <ShieldCheck className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">
               Mengapa Bergabung
             </span>
           </div>
@@ -191,7 +191,7 @@ function InfoCard({
 }) {
   return (
     <div className={`animate-fade-in-up ${delay} p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-colors`}>
-      <Icon className="w-4 h-4 text-amber-400 mb-2" />
+      <Icon className="w-4 h-4 text-blue-400 mb-2" />
       <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">{label}</p>
       <p className="text-[13px] font-bold text-white mt-0.5">{value}</p>
     </div>
@@ -210,9 +210,9 @@ function BenefitCard({
   delay: string;
 }) {
   return (
-    <div className={`animate-fade-in-up ${delay} group p-5 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-amber-500/20 hover:bg-zinc-900/80 transition-all`}>
-      <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/15 transition-colors">
-        <Icon className="w-4 h-4 text-amber-400" />
+    <div className={`animate-fade-in-up ${delay} group p-5 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-blue-700/30 hover:bg-zinc-900/80 transition-all`}>
+      <div className="w-8 h-8 rounded-lg bg-blue-700/15 flex items-center justify-center mb-3 group-hover:bg-blue-700/25 transition-colors">
+        <Icon className="w-4 h-4 text-blue-400" />
       </div>
       <p className="text-sm font-bold text-white mb-1">{title}</p>
       <p className="text-xs text-zinc-500 leading-relaxed">{desc}</p>

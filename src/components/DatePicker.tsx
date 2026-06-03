@@ -165,13 +165,13 @@ export default function DatePicker({
           !displayText && "text-white/40",
           disabled && "opacity-50 cursor-not-allowed",
           hasError && "has-error",
-          open && "border-amber-500/40 bg-amber-500/[0.04]",
+          open && "border-blue-700/40 bg-blue-700/[0.06]",
         )}
       >
         <Calendar
           className={cn(
             "w-4 h-4 flex-shrink-0",
-            open ? "text-amber-400" : "text-zinc-500",
+            open ? "text-blue-400" : "text-zinc-500",
           )}
         />
         <span
@@ -252,9 +252,9 @@ export default function DatePicker({
                     // Hover (bukan selected, bukan disabled)
                     !sel && !dis && "hover:bg-white/[0.08]",
                     // Selected
-                    sel && "bg-amber-500 text-zinc-900 font-bold shadow-md shadow-amber-500/20",
+                    sel && "bg-blue-700 text-white font-bold shadow-md shadow-blue-700/30",
                     // Today ring
-                    today && !sel && "ring-1 ring-amber-400/40",
+                    today && !sel && "ring-1 ring-blue-400/40",
                   )}
                 >
                   {cell.date.getDate()}
@@ -274,7 +274,7 @@ export default function DatePicker({
                   setOpen(false);
                 }
               }}
-              className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
+              className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition-colors"
             >
               Hari ini
             </button>

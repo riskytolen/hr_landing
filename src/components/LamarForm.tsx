@@ -590,10 +590,10 @@ export default function LamarForm() {
           type="submit"
           disabled={isPending}
           className={cn(
-            "w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all",
-            "bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-900",
-            "shadow-lg shadow-amber-500/20",
-            "hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5",
+            "w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white transition-all",
+            "bg-gradient-to-r from-blue-700 to-blue-800",
+            "shadow-lg shadow-blue-800/30",
+            "hover:shadow-xl hover:shadow-blue-800/40 hover:-translate-y-0.5",
             "disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:transform-none",
           )}
         >
@@ -629,8 +629,8 @@ function FormSection({ icon: Icon, title, description, children }: FormSectionPr
   return (
     <div className="space-y-4">
       <div className="flex items-start gap-3 pb-3 border-b border-zinc-800">
-        <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-          <Icon className="w-3.5 h-3.5 text-amber-400" />
+        <div className="w-8 h-8 rounded-lg bg-blue-700/15 flex items-center justify-center flex-shrink-0">
+          <Icon className="w-3.5 h-3.5 text-blue-400" />
         </div>
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-white">{title}</h3>

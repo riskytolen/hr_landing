@@ -5,9 +5,9 @@
   --foreground: #fafafa;
   --card: #18181b;
   --card-foreground: #fafafa;
-  --primary: #f59e0b;
-  --primary-foreground: #09090b;
-  --primary-light: rgba(245, 158, 11, 0.12);
+  --primary: #1e3a5f;
+  --primary-foreground: #ffffff;
+  --primary-light: rgba(30, 58, 95, 0.15);
   --accent: #6366f1;
   --accent-light: rgba(99, 102, 241, 0.12);
   --success: #22c55e;
@@ -131,9 +131,9 @@ html, body {
 }
 
 .input-field:focus {
-  border-color: rgba(245, 158, 11, 0.5);
-  background: rgba(245, 158, 11, 0.04);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+  border-color: rgba(30, 58, 95, 0.6);
+  background: rgba(30, 58, 95, 0.06);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
 }
 
 .input-field.has-error {
@@ -177,10 +177,10 @@ textarea.input-field {
 }
 
 .toggle-pill.is-active {
-  border-color: rgba(245, 158, 11, 0.4);
-  background: rgba(245, 158, 11, 0.1);
-  color: #fbbf24;
-  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.15);
+  border-color: rgba(30, 58, 95, 0.5);
+  background: rgba(30, 58, 95, 0.15);
+  color: #93bbfd;
+  box-shadow: 0 0 0 1px rgba(30, 58, 95, 0.2);
 }
 
 .toggle-pill.is-active.variant-no {
