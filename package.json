@@ -30,6 +30,11 @@
     "wrangler": "^4.97.0"
   },
   "overrides": {
-    "next": "16.2.4"
+    "@opennextjs/cloudflare": {
+      "next": "$next"
+    },
+    "@opennextjs/aws": {
+      "next": "$next"
+    }
   }
 }
