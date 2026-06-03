@@ -142,7 +142,7 @@ export default function Select({
           !selected && "text-white/40",
           disabled && "opacity-50 cursor-not-allowed",
           hasError && "has-error",
-          open && "border-blue-500/60 bg-blue-500/[0.04]",
+          open && "border-amber-500/40 bg-amber-500/[0.04]",
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -158,7 +158,7 @@ export default function Select({
         <ChevronDown
           className={cn(
             "w-4 h-4 flex-shrink-0 text-white/40 transition-transform duration-200",
-            open && "rotate-180 text-blue-400",
+            open && "rotate-180 text-amber-400",
           )}
         />
       </button>
@@ -168,14 +168,14 @@ export default function Select({
         <div
           className={cn(
             "absolute z-50 mt-1.5 w-full rounded-xl overflow-hidden",
-            "bg-[#0f1729] border border-white/[0.1] shadow-2xl shadow-black/40",
+            "bg-zinc-900 border border-zinc-800 shadow-2xl shadow-black/60",
             "animate-fade-in",
           )}
           role="listbox"
         >
           {/* Search bar (auto-enable) */}
           {isSearchable && (
-            <div className="flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
+            <div className="flex items-center gap-2 px-3 py-2.5 border-b border-zinc-800 bg-zinc-800/30">
               <Search className="w-3.5 h-3.5 text-white/40 flex-shrink-0" />
               <input
                 ref={searchRef}
@@ -212,10 +212,10 @@ export default function Select({
                     aria-selected={isSelected}
                     className={cn(
                       "w-full flex items-center justify-between gap-2 px-3 py-2.5 text-sm text-left transition-colors",
-                      isHighlighted && "bg-blue-500/10",
+                      isHighlighted && "bg-amber-500/10",
                       isSelected
-                        ? "text-blue-300 font-semibold"
-                        : "text-white/85",
+                        ? "text-amber-300 font-semibold"
+                        : "text-zinc-300",
                     )}
                   >
                     <div className="min-w-0 flex-1">
@@ -227,7 +227,7 @@ export default function Select({
                       )}
                     </div>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 flex-shrink-0 text-blue-400" />
+                      <Check className="w-3.5 h-3.5 flex-shrink-0 text-amber-400" />
                     )}
                   </button>
                 );

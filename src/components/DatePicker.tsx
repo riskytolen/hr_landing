@@ -165,13 +165,13 @@ export default function DatePicker({
           !displayText && "text-white/40",
           disabled && "opacity-50 cursor-not-allowed",
           hasError && "has-error",
-          open && "border-blue-500/60 bg-blue-500/[0.04]",
+          open && "border-amber-500/40 bg-amber-500/[0.04]",
         )}
       >
         <Calendar
           className={cn(
             "w-4 h-4 flex-shrink-0",
-            open ? "text-blue-400" : "text-white/40",
+            open ? "text-amber-400" : "text-zinc-500",
           )}
         />
         <span
@@ -188,8 +188,8 @@ export default function DatePicker({
       {open && (
         <div
           className={cn(
-            "absolute z-50 mt-1.5 w-[300px] rounded-xl overflow-hidden",
-            "bg-[#0f1729] border border-white/[0.1] shadow-2xl shadow-black/40",
+            "absolute z-50 mt-1.5 w-full max-w-[300px] rounded-xl overflow-hidden",
+            "bg-zinc-900 border border-zinc-800 shadow-2xl shadow-black/60",
             "animate-fade-in p-3",
           )}
         >
@@ -223,7 +223,7 @@ export default function DatePicker({
             {HARI.map((h) => (
               <div
                 key={h}
-                className="text-center text-[10px] font-semibold text-white/40 uppercase tracking-wide py-1"
+                className="text-center text-[10px] font-semibold text-zinc-500 uppercase tracking-wide py-1"
               >
                 {h}
               </div>
@@ -246,15 +246,15 @@ export default function DatePicker({
                   className={cn(
                     "relative flex items-center justify-center h-9 text-[12px] font-medium rounded-lg transition-all",
                     // Base
-                    cell.inMonth ? "text-white/85" : "text-white/25",
+                    cell.inMonth ? "text-zinc-300" : "text-zinc-600",
                     // Disabled
                     dis && "opacity-30 cursor-not-allowed",
                     // Hover (bukan selected, bukan disabled)
                     !sel && !dis && "hover:bg-white/[0.08]",
                     // Selected
-                    sel && "bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30",
+                    sel && "bg-amber-500 text-zinc-900 font-bold shadow-md shadow-amber-500/20",
                     // Today ring
-                    today && !sel && "ring-1 ring-blue-400/50",
+                    today && !sel && "ring-1 ring-amber-400/40",
                   )}
                 >
                   {cell.date.getDate()}
@@ -264,7 +264,7 @@ export default function DatePicker({
           </div>
 
           {/* Quick actions footer */}
-          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/[0.06]">
+          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-zinc-800">
             <button
               type="button"
               onClick={() => {
@@ -274,7 +274,7 @@ export default function DatePicker({
                   setOpen(false);
                 }
               }}
-              className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+              className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
             >
               Hari ini
             </button>
@@ -285,7 +285,7 @@ export default function DatePicker({
                   onChange("");
                   setOpen(false);
                 }}
-                className="text-[11px] font-semibold text-white/40 hover:text-white/60 transition-colors"
+                className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-400 transition-colors"
               >
                 Hapus
               </button>
@@ -312,7 +312,7 @@ function NavBtn({
       type="button"
       onClick={onClick}
       title={title}
-      className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.08] transition-colors"
+      className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
     >
       {children}
     </button>

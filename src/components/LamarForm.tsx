@@ -578,7 +578,7 @@ export default function LamarForm() {
 
       {/* Submit error */}
       {submitError && (
-        <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm">
+        <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-danger/8 border border-danger/20 text-danger text-sm">
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
           <span>{submitError}</span>
         </div>
@@ -590,10 +590,10 @@ export default function LamarForm() {
           type="submit"
           disabled={isPending}
           className={cn(
-            "w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-base text-white transition-all",
-            "bg-gradient-to-r from-blue-600 to-indigo-600",
-            "shadow-lg shadow-blue-500/30",
-            "hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5",
+            "w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all",
+            "bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-900",
+            "shadow-lg shadow-amber-500/20",
+            "hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5",
             "disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:transform-none",
           )}
         >
@@ -609,7 +609,7 @@ export default function LamarForm() {
             </>
           )}
         </button>
-        <p className="text-[11px] text-white/40 text-center mt-3">
+        <p className="text-[11px] text-zinc-500 text-center mt-3">
           Dengan menekan tombol ini, Anda menyetujui data dipakai untuk proses rekrutmen.
         </p>
       </div>
@@ -628,13 +628,13 @@ interface FormSectionProps {
 function FormSection({ icon: Icon, title, description, children }: FormSectionProps) {
   return (
     <div className="space-y-4">
-      <div className="flex items-start gap-3 pb-3 border-b border-white/[0.06]">
-        <div className="w-9 h-9 rounded-xl bg-blue-500/10 ring-1 ring-blue-500/20 flex items-center justify-center flex-shrink-0">
-          <Icon className="w-4 h-4 text-blue-400" />
+      <div className="flex items-start gap-3 pb-3 border-b border-zinc-800">
+        <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+          <Icon className="w-3.5 h-3.5 text-amber-400" />
         </div>
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-white">{title}</h3>
-          {description && <p className="text-xs text-white/50 mt-0.5">{description}</p>}
+          {description && <p className="text-xs text-zinc-500 mt-0.5">{description}</p>}
         </div>
       </div>
       <div className="space-y-4">{children}</div>
@@ -655,8 +655,8 @@ interface FieldProps {
 function Field({ label, name, required, error, hint, icon: Icon, children }: FieldProps) {
   return (
     <div data-field={name}>
-      <label className="text-xs font-semibold text-white/70 mb-1.5 flex items-center gap-1.5">
-        {Icon && <Icon className="w-3.5 h-3.5 text-white/40" />}
+      <label className="text-xs font-semibold text-zinc-400 mb-1.5 flex items-center gap-1.5">
+        {Icon && <Icon className="w-3.5 h-3.5 text-zinc-500" />}
         {label}
         {required && <span className="text-danger">*</span>}
       </label>
@@ -667,7 +667,7 @@ function Field({ label, name, required, error, hint, icon: Icon, children }: Fie
           {error}
         </p>
       ) : hint ? (
-        <p className="mt-1 text-[11px] text-white/40">{hint}</p>
+        <p className="mt-1 text-[11px] text-zinc-500">{hint}</p>
       ) : null}
     </div>
   );

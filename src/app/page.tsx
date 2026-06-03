@@ -6,133 +6,169 @@ import {
   MapPin,
   Clock,
   ArrowDown,
+  Zap,
+  Users,
+  TrendingUp,
+  CheckCircle2,
 } from "lucide-react";
 import LamarForm from "@/components/LamarForm";
 
 export default function LandingPage() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
-      {/* Background ambience */}
+      {/* Background */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[#06080f]" />
-        <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px]" />
-        <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] rounded-full bg-violet-500/8 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+        <div className="absolute inset-0 bg-[#09090b]" />
+        {/* Ambient orbs - smaller for mobile perf */}
+        <div className="absolute -top-32 -left-32 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-amber-500/[0.07] blur-[100px]" />
+        <div className="absolute top-1/2 -right-40 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] rounded-full bg-indigo-500/[0.05] blur-[100px]" />
+        <div className="absolute bottom-0 left-1/3 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
+        {/* Subtle noise grain */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundSize: "128px 128px",
+        }} />
       </div>
 
-      {/* ─── Hero ─── */}
-      <section className="relative px-5 sm:px-8 pt-10 sm:pt-16 pb-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Brand */}
-          <div className="flex items-center gap-3 mb-10 sm:mb-14 animate-fade-in">
-            <div className="w-10 h-10 rounded-xl bg-white/[0.04] ring-1 ring-white/[0.08] flex items-center justify-center">
-              <Image src="/logo.png" alt="Jamslogistic" width={26} height={26} className="object-contain" />
+      {/* ─── Navbar ─── */}
+      <nav className="relative px-5 sm:px-8 pt-6 pb-4">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center">
+              <Image src="/logo.png" alt="Jamslogistic" width={22} height={22} className="object-contain" />
             </div>
             <div>
-              <p className="text-[15px] font-bold text-white leading-none">Jamslogistic</p>
-              <p className="text-[10px] font-medium text-blue-300/60 tracking-[0.2em] uppercase mt-1">
-                Karir Center
+              <p className="text-sm font-bold text-white leading-none">Jamslogistic</p>
+              <p className="text-[9px] font-semibold text-amber-400/60 tracking-[0.25em] uppercase mt-0.5">
+                Karir
               </p>
             </div>
           </div>
+          <a
+            href="#form"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold hover:bg-amber-500/15 transition-colors"
+          >
+            <Sparkles className="w-3 h-3" />
+            Lamar Sekarang
+          </a>
+        </div>
+      </nav>
 
-          <div className="grid lg:grid-cols-12 gap-10 items-start">
-            {/* Hero copy */}
-            <div className="lg:col-span-7 animate-fade-in">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[12px] font-semibold mb-5">
-                <Sparkles className="w-3.5 h-3.5" />
-                Sedang membuka lowongan
+      {/* ─── Hero ─── */}
+      <section className="relative px-5 sm:px-8 pt-8 sm:pt-16 pb-16 sm:pb-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="max-w-2xl">
+            {/* Badge */}
+            <div className="animate-fade-in">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                Lowongan Terbuka
               </span>
+            </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-5">
-                Bergabung dengan Tim
-                <br />
-                <span className="text-blue-400">Jamslogistic.</span>
-              </h1>
+            {/* Heading */}
+            <h1 className="animate-fade-in delay-100 text-3xl sm:text-4xl lg:text-[3.25rem] font-extrabold text-white leading-[1.1] tracking-tight mb-5">
+              Bangun Karir Anda
+              <br />
+              Bersama{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">
+                Jamslogistic.
+              </span>
+            </h1>
 
-              <p className="text-white/60 text-base sm:text-lg leading-relaxed max-w-xl mb-8">
-                Kami sedang mencari Driver dan Helper berdedikasi untuk pengiriman di area Jabodetabek.
-                Isi formulir di bawah, tim HR akan menghubungi Anda.
-              </p>
+            {/* Description */}
+            <p className="animate-fade-in delay-200 text-zinc-400 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+              Kami mencari Driver dan Helper berdedikasi untuk pengiriman area Jabodetabek. 
+              Isi formulir, tim HR akan menghubungi Anda.
+            </p>
 
-              {/* Quick stats */}
-              <div className="grid grid-cols-3 gap-4 max-w-xl mb-8">
-                <Stat icon={MapPin} label="Area" value="Jabodetabek" />
-                <Stat icon={Truck} label="Posisi" value="Driver, Helper" />
-                <Stat icon={Clock} label="Sistem" value="Shift" />
-              </div>
-
+            {/* CTA */}
+            <div className="animate-fade-in delay-300 flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-12 sm:mb-16">
               <a
                 href="#form"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-900 text-sm font-bold shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition-all hover:-translate-y-0.5"
               >
                 Daftar Sekarang
                 <ArrowDown className="w-4 h-4" />
               </a>
-            </div>
-
-            {/* Side info card */}
-            <div className="lg:col-span-5 animate-scale-in">
-              <div className="relative rounded-3xl border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-7 backdrop-blur-sm overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="relative">
-                  <div className="flex items-center gap-2 mb-5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">
-                      Mengapa Bergabung
-                    </span>
-                  </div>
-
-                  <ul className="space-y-4">
-                    <Benefit
-                      title="Penghasilan jelas"
-                      desc="Sistem gaji bulanan + bonus per titik untuk Driver/Helper."
-                    />
-                    <Benefit
-                      title="Tim profesional"
-                      desc="Manajemen rapi, sistem absensi modern, payroll tepat waktu."
-                    />
-                    <Benefit
-                      title="Karir jangka panjang"
-                      desc="Kesempatan promosi sesuai kinerja yang dinilai objektif."
-                    />
-                    <Benefit
-                      title="Proses cepat"
-                      desc="Lamaran masuk, training pendek, langsung kerja."
-                    />
-                  </ul>
-                </div>
+              <div className="flex items-center gap-2 text-zinc-500 text-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Proses cepat, langsung diproses HR</span>
               </div>
             </div>
+          </div>
+
+          {/* Info Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <InfoCard icon={MapPin} label="Area Kerja" value="Jabodetabek" delay="delay-100" />
+            <InfoCard icon={Truck} label="Posisi" value="Driver & Helper" delay="delay-200" />
+            <InfoCard icon={Clock} label="Sistem Kerja" value="Shift" delay="delay-300" />
+            <InfoCard icon={Zap} label="Proses" value="Cepat" delay="delay-400" />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Why Join ─── */}
+      <section className="relative px-5 sm:px-8 pb-16 sm:pb-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-6">
+            <ShieldCheck className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              Mengapa Bergabung
+            </span>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <BenefitCard
+              icon={TrendingUp}
+              title="Penghasilan Jelas"
+              desc="Gaji bulanan + bonus per titik pengiriman."
+              delay="delay-100"
+            />
+            <BenefitCard
+              icon={Users}
+              title="Tim Profesional"
+              desc="Manajemen rapi, absensi modern, payroll tepat."
+              delay="delay-200"
+            />
+            <BenefitCard
+              icon={Sparkles}
+              title="Karir Jangka Panjang"
+              desc="Promosi berdasarkan kinerja yang dinilai objektif."
+              delay="delay-300"
+            />
+            <BenefitCard
+              icon={Zap}
+              title="Proses Cepat"
+              desc="Lamaran masuk, training pendek, langsung kerja."
+              delay="delay-400"
+            />
           </div>
         </div>
       </section>
 
       {/* ─── Form ─── */}
-      <section id="form" className="relative px-5 sm:px-8 pb-20">
-        <div className="max-w-3xl mx-auto">
+      <section id="form" className="relative px-4 sm:px-8 pb-16 sm:pb-24">
+        <div className="max-w-2xl mx-auto">
+          {/* Form Header */}
           <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700/50 text-zinc-300 text-[11px] font-bold uppercase tracking-wider mb-4">
+              Form Lamaran
+            </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Form Lamaran Kerja
+              Isi Data Anda
             </h2>
-            <p className="text-white/50 text-sm">
-              Isi data dengan benar. Tanda <span className="text-danger">*</span> wajib diisi.
+            <p className="text-zinc-500 text-sm">
+              Lengkapi formulir berikut. Tanda <span className="text-danger">*</span> wajib diisi.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-6 sm:p-8">
+          {/* Form Card */}
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-7">
             <LamarForm />
           </div>
 
-          <p className="text-center text-[11px] text-white/30 mt-6">
+          <p className="text-center text-[11px] text-zinc-600 mt-6">
             &copy; {new Date().getFullYear()} Jamslogistic — Karir Center
           </p>
         </div>
@@ -142,32 +178,44 @@ export default function LandingPage() {
 }
 
 // ─── Subcomponents ───
-function Stat({
+function InfoCard({
   icon: Icon,
   label,
   value,
+  delay,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
+  delay: string;
 }) {
   return (
-    <div className="px-3 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-      <Icon className="w-4 h-4 text-blue-400 mb-1.5" />
-      <p className="text-[10px] uppercase tracking-wider text-white/40 font-semibold">{label}</p>
-      <p className="text-[12px] font-bold text-white truncate">{value}</p>
+    <div className={`animate-fade-in-up ${delay} p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-colors`}>
+      <Icon className="w-4 h-4 text-amber-400 mb-2" />
+      <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">{label}</p>
+      <p className="text-[13px] font-bold text-white mt-0.5">{value}</p>
     </div>
   );
 }
 
-function Benefit({ title, desc }: { title: string; desc: string }) {
+function BenefitCard({
+  icon: Icon,
+  title,
+  desc,
+  delay,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  desc: string;
+  delay: string;
+}) {
   return (
-    <li className="flex items-start gap-3">
-      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
-      <div>
-        <p className="text-[13px] font-semibold text-white">{title}</p>
-        <p className="text-[12px] text-white/50 leading-relaxed mt-0.5">{desc}</p>
+    <div className={`animate-fade-in-up ${delay} group p-5 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-amber-500/20 hover:bg-zinc-900/80 transition-all`}>
+      <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/15 transition-colors">
+        <Icon className="w-4 h-4 text-amber-400" />
       </div>
-    </li>
+      <p className="text-sm font-bold text-white mb-1">{title}</p>
+      <p className="text-xs text-zinc-500 leading-relaxed">{desc}</p>
+    </div>
   );
 }
