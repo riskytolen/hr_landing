@@ -10,9 +10,7 @@ interface SuksesPageProps {
 
 export default async function SuksesPage({ searchParams }: SuksesPageProps) {
   const params = await searchParams;
-  const id = params.id;
   const nama = params.nama;
-  const refCode = id ? `JL-${String(id).padStart(5, "0")}` : null;
 
   return (
     <main className="relative min-h-screen flex items-center justify-center px-5 py-12">
@@ -50,16 +48,7 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
             </p>
 
             {/* Reference code */}
-            {refCode && (
-              <div className="inline-flex flex-col items-center gap-1 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200 mb-6 shadow-sm">
-                <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
-                  Kode Referensi
-                </p>
-                <p className="text-lg font-mono font-extrabold text-blue-700 tabular-nums">{refCode}</p>
-              </div>
-            )}
-
-            {/* Next steps */}
+                        {/* Next steps */}
             <div className="text-left bg-slate-50 border border-slate-200 rounded-xl p-4 mb-8 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Mail className="w-4 h-4 text-blue-600" />
@@ -109,3 +98,4 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
     </main>
   );
 }
+
