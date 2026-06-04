@@ -21,8 +21,38 @@ function getClientIp(req: NextRequest): string {
 
 export async function POST(req: NextRequest) {
   try {
-    //  Validasi CV (WAJIB) 
-    const cvFile = fd.get("cv");
+    // ─── Rate limit ───
+    const ip = getClientIp(req);
+    const rl = checkRateLimit(ip);
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "Terlalu banyak percobaan.", retryAfterSec: rl.retryAfterSec },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
+      );
+    }
+
+    // ─── Parse multipart ───
+    const fd = await req.formData();
+    const payloadRaw = fd.get("payload");
+    if (typeof payloadRaw !== "string") {
+      return NextResponse.json({ error: "Payload tidak valid." }, { status: 400 });
+    }
+
+    let payload: Partial<LamarPayload>;
+    try {
+      payload = JSON.parse(payloadRaw);
+    } catch {
+      return NextResponse.json({ error: "Payload JSON tidak valid." }, { status: 400 });
+    }
+
+    // ─── Validasi field ───
+    const fieldErrors = validatePayload(payload);
+    if (fieldErrors.length > 0) {
+      return NextResponse.json({ error: "Validasi gagal", fieldErrors }, { status: 400 });
+    }
+
+    // ─── Validasi CV (opsional) ───
+        const cvFile = fd.get("cv");
     let cvBlob: Blob | null = null;
     let cvName: string | null = null;
     let cvType: string | null = null;
