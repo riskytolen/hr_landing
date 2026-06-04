@@ -91,10 +91,16 @@ export default async function SuksesPage({ searchParams }: SuksesPageProps) {
             </Link>
 
             {/* Brand footer */}
-            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-2">
-              <Image src="/logo.png" alt="Jamslogistic" width={20} height={20} className="object-contain grayscale opacity-60" />
+            <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col items-center justify-center gap-3">
+              <Image 
+                src="/logo-new.png" 
+                alt="Jamslogistic" 
+                width={120} 
+                height={32} 
+                className="object-contain opacity-70" 
+              />
               <p className="text-[11px] text-slate-400 font-medium">
-                &copy; {new Date().getFullYear()} Jamslogistic
+                &copy; {new Date().getFullYear()} Hak Cipta Dilindungi
               </p>
             </div>
           </div>

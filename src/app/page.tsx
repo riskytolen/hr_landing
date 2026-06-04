@@ -33,15 +33,16 @@ export default function LandingPage() {
       {/* ─── Navbar ─── */}
       <nav className="relative px-5 sm:px-8 pt-6 pb-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 shadow-sm flex items-center justify-center">
-              <Image src="/logo.png" alt="Jamslogistic" width={22} height={22} className="object-contain" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900 leading-none">Jamslogistic</p>
-              <p className="text-[9px] font-bold text-blue-700 tracking-[0.2em] uppercase mt-0.5">
-                Karir
-              </p>
+          <div className="flex items-center">
+            <div className="h-10 sm:h-12 relative flex items-center">
+              <Image 
+                src="/logo-new.png" 
+                alt="Jamslogistic" 
+                width={180} 
+                height={48} 
+                className="object-contain w-auto h-full" 
+                priority
+              />
             </div>
           </div>
           <a
