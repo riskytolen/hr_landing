@@ -130,8 +130,9 @@ export async function POST(req: NextRequest) {
         .upload(path, cvBlob, { contentType: cvType, upsert: false });
 
       if (upErr) {
-        console.warn("[lamar] CV upload failed:", upErr.message);
-        // Lamaran sudah masuk, CV failed → tetap success tapi tanpa cv_url
+        // Rollback: hapus data lamaran yang baru saja masuk karena file gagal terupload
+        await admin.from("recruitments").delete().eq("id", recruitmentId);
+        return NextResponse.json({ error: "Gagal menyimpan file CV ke Storage Supabase: " + upErr.message }, { status: 500 });
       } else {
         const { data: pub } = admin.storage.from(BUCKET).getPublicUrl(path);
         cvUrl = pub.publicUrl;
@@ -155,5 +156,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
 
 
