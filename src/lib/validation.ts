@@ -4,7 +4,7 @@
  */
 
 export const ALLOWED_CV_TYPES = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
-export const MAX_CV_SIZE_MB = 2;
+export const MAX_CV_SIZE_MB = 5;
 export const MAX_CV_SIZE_BYTES = MAX_CV_SIZE_MB * 1024 * 1024;
 
 export const PENDIDIKAN_OPTIONS = [

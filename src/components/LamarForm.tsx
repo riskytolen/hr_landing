@@ -149,6 +149,8 @@ export default function LamarForm() {
     if (state.bersedia_shift === null) errs.bersedia_shift = "Wajib dipilih.";
     if (state.bersedia_jabodetabek === null) errs.bersedia_jabodetabek = "Wajib dipilih.";
 
+    if (!cvFile) errs.cv = "File CV/KTP wajib dilampirkan.";
+
     setErrors(errs);
 
     // Scroll ke field error pertama
@@ -515,8 +517,13 @@ export default function LamarForm() {
       </FormSection>
 
       {/* ─── Section: Lampiran ─── */}
-      <FormSection icon={FileText} title="Lampiran CV (Opsional)" description="Maksimal 2 MB. Format PDF, JPG, atau PNG.">
+      <FormSection icon={FileText} title="Lampiran Berkas" description="Wajib melampirkan CV/Foto Diri. Maksimal 5 MB. Format PDF, JPG, atau PNG.">
         <div data-field="cv">
+          <label className="text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-slate-400" />
+            File CV / Pas Foto
+            <span className="text-danger">*</span>
+          </label>
           <label className="block">
             <input
               ref={fileInputRef}
@@ -548,7 +555,7 @@ export default function LamarForm() {
                 <>
                   <Upload className="w-8 h-8 mx-auto mb-2 text-slate-400" />
                   <p className="text-sm font-bold text-slate-700">Klik untuk pilih file CV</p>
-                  <p className="text-xs font-medium text-slate-500 mt-1">PDF, JPG, atau PNG · maksimal 2 MB</p>
+                  <p className="text-xs font-medium text-slate-500 mt-1">PDF, JPG, atau PNG · maksimal 5 MB</p>
                 </>
               )}
             </div>

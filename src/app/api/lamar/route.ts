@@ -21,59 +21,32 @@ function getClientIp(req: NextRequest): string {
 
 export async function POST(req: NextRequest) {
   try {
-    // ─── Rate limit ───
-    const ip = getClientIp(req);
-    const rl = checkRateLimit(ip);
-    if (!rl.ok) {
-      return NextResponse.json(
-        { error: "Terlalu banyak percobaan.", retryAfterSec: rl.retryAfterSec },
-        { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
-      );
-    }
-
-    // ─── Parse multipart ───
-    const fd = await req.formData();
-    const payloadRaw = fd.get("payload");
-    if (typeof payloadRaw !== "string") {
-      return NextResponse.json({ error: "Payload tidak valid." }, { status: 400 });
-    }
-
-    let payload: Partial<LamarPayload>;
-    try {
-      payload = JSON.parse(payloadRaw);
-    } catch {
-      return NextResponse.json({ error: "Payload JSON tidak valid." }, { status: 400 });
-    }
-
-    // ─── Validasi field ───
-    const fieldErrors = validatePayload(payload);
-    if (fieldErrors.length > 0) {
-      return NextResponse.json({ error: "Validasi gagal", fieldErrors }, { status: 400 });
-    }
-
-    // ─── Validasi CV (opsional) ───
+    //  Validasi CV (WAJIB) 
     const cvFile = fd.get("cv");
     let cvBlob: Blob | null = null;
     let cvName: string | null = null;
     let cvType: string | null = null;
-    if (cvFile && typeof cvFile === "object" && "size" in cvFile) {
-      const f = cvFile as Blob & { name?: string; type?: string };
-      if (f.size > 0) {
-        if (f.size > MAX_CV_SIZE_BYTES) {
-          return NextResponse.json({ error: "Ukuran CV melebihi 2 MB." }, { status: 400 });
-        }
-        const fileType = f.type ?? "";
-        if (!ALLOWED_CV_TYPES.includes(fileType)) {
-          return NextResponse.json(
-            { error: "Tipe file CV tidak diperbolehkan (hanya PDF/JPG/PNG)." },
-            { status: 400 },
-          );
-        }
-        cvBlob = f;
-        cvName = f.name ?? "cv";
-        cvType = fileType;
-      }
+    
+    if (!cvFile || typeof cvFile === "string" || !("size" in cvFile) || cvFile.size === 0) {
+      return NextResponse.json({ error: "File CV/KTP wajib dilampirkan." }, { status: 400 });
     }
+
+    const f = cvFile as Blob & { name?: string; type?: string };
+    if (f.size > MAX_CV_SIZE_BYTES) {
+      return NextResponse.json({ error: "Ukuran file melebihi 5 MB." }, { status: 400 });
+    }
+    
+    const fileType = f.type ?? "";
+    if (!ALLOWED_CV_TYPES.includes(fileType)) {
+      return NextResponse.json(
+        { error: "Tipe file tidak diperbolehkan (hanya PDF/JPG/PNG)." },
+        { status: 400 },
+      );
+    }
+    
+    cvBlob = f;
+    cvName = f.name ?? "cv";
+    cvType = fileType;
 
     // ─── Insert recruitment ───
     const admin = createAdminClient();
@@ -152,4 +125,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
 
