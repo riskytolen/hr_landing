@@ -3,27 +3,41 @@
  * Server route HARUS re-validasi karena client validation bisa di-bypass.
  */
 
-export const ALLOWED_CV_TYPES = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
-export const MAX_CV_SIZE_MB = 5;
-export const MAX_CV_SIZE_BYTES = MAX_CV_SIZE_MB * 1024 * 1024;
+export const ALLOWED_DOC_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+export const MAX_DOC_SIZE_MB = 2;
+export const MAX_DOC_SIZE_BYTES = MAX_DOC_SIZE_MB * 1024 * 1024;
+
+export const DOC_CONFIGS = [
+  { type: "cv", label: "CV", folder: "cv", urlColumn: "cv_url" },
+  { type: "ktp", label: "KTP", folder: "ktp", urlColumn: "ktp_url" },
+  { type: "pas_foto", label: "Pas Foto", folder: "pas-foto", urlColumn: "pas_foto_url" },
+  { type: "sim", label: "SIM Mobil", folder: "sim", urlColumn: "sim_url" },
+] as const;
+
+export type DocType = (typeof DOC_CONFIGS)[number]["type"];
+
+export function isDocRequired(type: DocType, posisiDilamar: string | undefined): boolean {
+  return type !== "sim" || posisiDilamar === "Driver";
+}
 
 export const PENDIDIKAN_OPTIONS = [
   "SD",
   "SMP",
   "SMA/SMK",
-  "Diploma",
+  "D1",
+  "D2",
+  "D3",
   "S1",
   "S2",
-  "Lainnya",
+  "S3",
 ] as const;
 
 export const POSISI_OPTIONS = [
   "Driver",
   "Helper",
-  "Lainnya",
+  "Staf Office",
+  "Maintenance",
 ] as const;
-
-export const SIM_OPTIONS = ["Tidak Ada", "A", "B1", "B2"] as const;
 
 /** Hitung umur dari tanggal lahir (YYYY-MM-DD). */
 export function calculateAge(tglLahir: string): number {
@@ -62,7 +76,6 @@ export interface LamarPayload {
   daerah_kerja_terakhir?: string;
   status_pernikahan_pelamar?: string; // "Berkeluarga" | "Belum Berkeluarga"
   bisa_nyupir: boolean;
-  sim?: string; // "A" | "B1" | "B2" | "Tidak Ada"
   bersedia_shift: boolean;
   bersedia_jabodetabek: boolean;
 }
@@ -114,10 +127,6 @@ export function validatePayload(payload: Partial<LamarPayload>): ValidationError
 
   if (typeof payload.bersedia_jabodetabek !== "boolean") {
     errors.push({ field: "bersedia_jabodetabek", message: "Pilih kesediaan ditempatkan di Jabodetabek." });
-  }
-
-  if (payload.sim && !SIM_OPTIONS.includes(payload.sim as (typeof SIM_OPTIONS)[number])) {
-    errors.push({ field: "sim", message: "Pilihan SIM tidak valid." });
   }
 
   if (payload.status_pernikahan_pelamar &&

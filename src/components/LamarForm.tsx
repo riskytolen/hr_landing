@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import imageCompression from "browser-image-compression";
 import {
   User,
   MapPin,
@@ -12,6 +13,8 @@ import {
   Heart,
   Car,
   IdCard,
+  Camera,
+  CreditCard,
   Clock,
   MapPinned,
   GraduationCap,
@@ -27,14 +30,16 @@ import { cn } from "@/lib/utils";
 import Select from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
 import {
-  ALLOWED_CV_TYPES,
-  MAX_CV_SIZE_MB,
-  MAX_CV_SIZE_BYTES,
+  ALLOWED_DOC_TYPES,
+  DOC_CONFIGS,
+  MAX_DOC_SIZE_BYTES,
+  MAX_DOC_SIZE_MB,
   PENDIDIKAN_OPTIONS,
   POSISI_OPTIONS,
-  SIM_OPTIONS,
   calculateAge,
+  isDocRequired,
   isValidPhone,
+  type DocType,
   type LamarPayload,
 } from "@/lib/validation";
 
@@ -51,7 +56,6 @@ interface FormState {
   daerah_kerja_terakhir: string;
   status_pernikahan_pelamar: "Berkeluarga" | "Belum Berkeluarga" | "";
   bisa_nyupir: boolean | null;
-  sim: string;
   bersedia_shift: boolean | null;
   bersedia_jabodetabek: boolean | null;
   // honeypot — harus tetap kosong
@@ -71,20 +75,45 @@ const INITIAL_STATE: FormState = {
   daerah_kerja_terakhir: "",
   status_pernikahan_pelamar: "",
   bisa_nyupir: null,
-  sim: "",
   bersedia_shift: null,
   bersedia_jabodetabek: null,
   hp_field: "",
 };
 
+const EMPTY_DOC_FILES: Record<DocType, File | null> = {
+  cv: null,
+  ktp: null,
+  pas_foto: null,
+  sim: null,
+};
+
+const EMPTY_DOC_PROCESSING: Record<DocType, boolean> = {
+  cv: false,
+  ktp: false,
+  pas_foto: false,
+  sim: false,
+};
+
+const DOC_ICONS: Record<DocType, React.ComponentType<{ className?: string }>> = {
+  cv: FileText,
+  ktp: IdCard,
+  pas_foto: Camera,
+  sim: CreditCard,
+};
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export default function LamarForm() {
   const router = useRouter();
   const [state, setState] = useState<FormState>(INITIAL_STATE);
-  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [docFiles, setDocFiles] = useState<Record<DocType, File | null>>(EMPTY_DOC_FILES);
+  const [docProcessing, setDocProcessing] = useState<Record<DocType, boolean>>(EMPTY_DOC_PROCESSING);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setState((s) => ({ ...s, [key]: value }));
@@ -97,30 +126,62 @@ export default function LamarForm() {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocFileChange = async (type: DocType, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    const field = `doc_${type}`;
+    const config = DOC_CONFIGS.find((d) => d.type === type);
+
     setErrors((er) => {
       const n = { ...er };
-      delete n.cv;
+      delete n[field];
       return n;
     });
-    if (!file) {
-      setCvFile(null);
+
+    if (!file || !config) {
+      setDocFiles((prev) => ({ ...prev, [type]: null }));
       return;
     }
-    if (!ALLOWED_CV_TYPES.includes(file.type)) {
-      setErrors((er) => ({ ...er, cv: "Hanya file PDF atau JPG/PNG yang diperbolehkan." }));
-      setCvFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+
+    if (!ALLOWED_DOC_TYPES.includes(file.type)) {
+      setErrors((er) => ({ ...er, [field]: "Hanya file JPG/PNG yang diperbolehkan." }));
+      setDocFiles((prev) => ({ ...prev, [type]: null }));
+      e.currentTarget.value = "";
       return;
     }
-    if (file.size > MAX_CV_SIZE_BYTES) {
-      setErrors((er) => ({ ...er, cv: `Ukuran file maksimal ${MAX_CV_SIZE_MB} MB.` }));
-      setCvFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
+
+    setDocProcessing((prev) => ({ ...prev, [type]: true }));
+    try {
+      let finalFile = file;
+      if (file.size > MAX_DOC_SIZE_BYTES) {
+        const compressed = await imageCompression(file, {
+          maxSizeMB: MAX_DOC_SIZE_MB,
+          maxWidthOrHeight: 1600,
+          useWebWorker: true,
+          fileType: "image/jpeg",
+          initialQuality: 0.75,
+        });
+        const baseName = file.name.replace(/\.[^.]+$/, "") || config.type;
+        finalFile = new File([compressed], `${baseName}.jpg`, {
+          type: "image/jpeg",
+          lastModified: file.lastModified,
+        });
+      }
+
+      if (finalFile.size > MAX_DOC_SIZE_BYTES) {
+        setErrors((er) => ({ ...er, [field]: `Ukuran ${config.label} masih melebihi ${MAX_DOC_SIZE_MB} MB setelah kompresi. Pilih foto yang lebih kecil.` }));
+        setDocFiles((prev) => ({ ...prev, [type]: null }));
+        e.currentTarget.value = "";
+        return;
+      }
+
+      setDocFiles((prev) => ({ ...prev, [type]: finalFile }));
+    } catch {
+      setErrors((er) => ({ ...er, [field]: `Gagal mengompres ${config.label}. Silakan coba file lain.` }));
+      setDocFiles((prev) => ({ ...prev, [type]: null }));
+      e.currentTarget.value = "";
+    } finally {
+      setDocProcessing((prev) => ({ ...prev, [type]: false }));
     }
-    setCvFile(file);
   };
 
   const validate = (): boolean => {
@@ -149,7 +210,10 @@ export default function LamarForm() {
     if (state.bersedia_shift === null) errs.bersedia_shift = "Wajib dipilih.";
     if (state.bersedia_jabodetabek === null) errs.bersedia_jabodetabek = "Wajib dipilih.";
 
-    if (!cvFile) errs.cv = "File CV/KTP wajib dilampirkan.";
+    for (const doc of DOC_CONFIGS) {
+      if (!isDocRequired(doc.type, state.posisi_dilamar)) continue;
+      if (!docFiles[doc.type]) errs[`doc_${doc.type}`] = `${doc.label} wajib dilampirkan.`;
+    }
 
     setErrors(errs);
 
@@ -196,12 +260,14 @@ export default function LamarForm() {
           daerah_kerja_terakhir: state.daerah_kerja_terakhir.trim() || undefined,
           status_pernikahan_pelamar: state.status_pernikahan_pelamar || undefined,
           bisa_nyupir: state.bisa_nyupir!,
-          sim: state.sim || undefined,
           bersedia_shift: state.bersedia_shift!,
           bersedia_jabodetabek: state.bersedia_jabodetabek!,
         };
         fd.append("payload", JSON.stringify(payload));
-        if (cvFile) fd.append("cv", cvFile);
+        for (const doc of DOC_CONFIGS) {
+          const file = docFiles[doc.type];
+          if (file) fd.append(doc.type, file);
+        }
 
         const res = await fetch("/api/lamar", { method: "POST", body: fd });
         const json = await res.json();
@@ -371,7 +437,16 @@ export default function LamarForm() {
           >
             <Select
               value={state.posisi_dilamar}
-              onChange={(val) => update("posisi_dilamar", val)}
+              onChange={(val) => {
+                update("posisi_dilamar", val);
+                if (val !== "Driver") {
+                  setErrors((er) => {
+                    const n = { ...er };
+                    delete n.doc_sim;
+                    return n;
+                  });
+                }
+              }}
               options={POSISI_OPTIONS.map((p) => ({ value: p, label: p }))}
               placeholder="— Pilih posisi —"
               hasError={!!errors.posisi_dilamar}
@@ -456,15 +531,6 @@ export default function LamarForm() {
           </div>
         </Field>
 
-        <Field label="SIM yang Dimiliki" name="sim" icon={IdCard}>
-          <Select
-            value={state.sim}
-            onChange={(val) => update("sim", val)}
-            options={SIM_OPTIONS.map((s) => ({ value: s, label: s === "Tidak Ada" ? s : `SIM ${s}` }))}
-            placeholder="— Pilih jenis SIM —"
-          />
-        </Field>
-
         <Field
           label="Bersedia Kerja Shift?"
           required
@@ -517,54 +583,84 @@ export default function LamarForm() {
       </FormSection>
 
       {/* ─── Section: Lampiran ─── */}
-      <FormSection icon={FileText} title="Lampiran Berkas" description="Wajib melampirkan CV/Foto Diri. Maksimal 5 MB. Format PDF, JPG, atau PNG.">
-        <div data-field="cv">
-          <label className="text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 text-slate-400" />
-            File CV / Pas Foto
-            <span className="text-danger">*</span>
-          </label>
-          <label className="block cursor-pointer">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <div
-              className={cn(
-                "border-2 border-dashed rounded-xl px-6 py-8 text-center cursor-pointer transition-all",
-                cvFile
-                  ? "border-emerald-500/40 bg-emerald-50"
-                  : errors.cv
-                    ? "border-red-500/40 bg-red-50"
-                    : "border-slate-300 hover:border-blue-400 hover:bg-slate-50",
-              )}
-            >
-              {cvFile ? (
-                <>
-                  <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-emerald-500" />
-                  <p className="text-sm font-bold text-slate-900">{cvFile.name}</p>
-                  <p className="text-xs font-medium text-slate-500 mt-1">
-                    {(cvFile.size / 1024).toFixed(0)} KB · klik untuk ganti
+      <FormSection
+        icon={FileText}
+        title="Dokumen Pelamar"
+        description={`CV, KTP, dan Pas Foto wajib. SIM Mobil wajib khusus Driver. JPG/PNG maksimal ${MAX_DOC_SIZE_MB} MB, otomatis dikompres.`}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {DOC_CONFIGS.map((doc) => {
+            const Icon = DOC_ICONS[doc.type];
+            const file = docFiles[doc.type];
+            const processing = docProcessing[doc.type];
+            const required = isDocRequired(doc.type, state.posisi_dilamar);
+            const fieldName = `doc_${doc.type}`;
+            const error = errors[fieldName];
+
+            return (
+              <div key={doc.type} data-field={fieldName}>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Icon className="w-3.5 h-3.5 text-slate-400" />
+                    {doc.label}
+                    {required && <span className="text-danger">*</span>}
+                  </label>
+                  {doc.type === "sim" && !required && (
+                    <span className="text-[10px] font-bold text-slate-400">khusus Driver</span>
+                  )}
+                </div>
+                <label className="block cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                    onChange={(e) => void handleDocFileChange(doc.type, e)}
+                    disabled={processing || isPending}
+                    className="hidden"
+                  />
+                  <div
+                    className={cn(
+                      "border-2 border-dashed rounded-xl px-4 py-5 text-center cursor-pointer transition-all min-h-[126px] flex flex-col items-center justify-center",
+                      processing
+                        ? "border-blue-500/40 bg-blue-50 cursor-wait"
+                        : file
+                          ? "border-emerald-500/40 bg-emerald-50"
+                          : error
+                            ? "border-red-500/40 bg-red-50"
+                            : "border-slate-300 hover:border-blue-400 hover:bg-slate-50",
+                    )}
+                  >
+                    {processing ? (
+                      <>
+                        <Loader2 className="w-7 h-7 mx-auto mb-2 text-blue-600 animate-spin" />
+                        <p className="text-sm font-bold text-blue-800">Mengompres...</p>
+                        <p className="text-xs font-medium text-blue-500 mt-1">Mohon tunggu sebentar</p>
+                      </>
+                    ) : file ? (
+                      <>
+                        <CheckCircle2 className="w-7 h-7 mx-auto mb-2 text-emerald-500" />
+                        <p className="text-sm font-bold text-slate-900 max-w-full truncate">{file.name}</p>
+                        <p className="text-xs font-medium text-slate-500 mt-1">
+                          {formatFileSize(file.size)} · klik untuk ganti
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-7 h-7 mx-auto mb-2 text-slate-400" />
+                        <p className="text-sm font-bold text-slate-700">Pilih {doc.label}</p>
+                        <p className="text-xs font-medium text-slate-500 mt-1">JPG/PNG · maksimal {MAX_DOC_SIZE_MB} MB</p>
+                      </>
+                    )}
+                  </div>
+                </label>
+                {error && (
+                  <p className="mt-2 text-xs text-danger flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {error}
                   </p>
-                </>
-              ) : (
-                <>
-                  <Upload className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                  <p className="text-sm font-bold text-slate-700">Klik untuk pilih file CV</p>
-                  <p className="text-xs font-medium text-slate-500 mt-1">PDF, JPG, atau PNG · maksimal 5 MB</p>
-                </>
-              )}
-            </div>
-          </label>
-          {errors.cv && (
-            <p className="mt-2 text-xs text-danger flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" />
-              {errors.cv}
-            </p>
-          )}
+                )}
+              </div>
+            );
+          })}
         </div>
       </FormSection>
 

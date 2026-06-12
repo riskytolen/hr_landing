@@ -3,13 +3,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { checkRateLimit } from "@/lib/rate-limit";
 import {
-  ALLOWED_CV_TYPES,
-  MAX_CV_SIZE_BYTES,
+  ALLOWED_DOC_TYPES,
+  DOC_CONFIGS,
+  MAX_DOC_SIZE_BYTES,
+  MAX_DOC_SIZE_MB,
+  isDocRequired,
   validatePayload,
+  type DocType,
   type LamarPayload,
 } from "@/lib/validation";
 
 const BUCKET = "recruitment-docs";
+
+type IncomingFile = Blob & { name?: string; type?: string; size: number };
+
+function getFormFile(fd: FormData, type: DocType): IncomingFile | null {
+  const value = fd.get(type);
+  if (!value || typeof value === "string" || !("size" in value) || value.size === 0) return null;
+  return value as IncomingFile;
+}
+
+function fileExt(mimeType: string): "png" | "jpg" {
+  return mimeType === "image/png" ? "png" : "jpg";
+}
 
 function getClientIp(req: NextRequest): string {
   const xff = req.headers.get("x-forwarded-for");
@@ -51,32 +67,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Validasi gagal", fieldErrors }, { status: 400 });
     }
 
-    // ─── Validasi CV (opsional) ───
-        const cvFile = fd.get("cv");
-    let cvBlob: Blob | null = null;
-    let cvName: string | null = null;
-    let cvType: string | null = null;
-    
-    if (!cvFile || typeof cvFile === "string" || !("size" in cvFile) || cvFile.size === 0) {
-      return NextResponse.json({ error: "File CV/KTP wajib dilampirkan." }, { status: 400 });
+    // ─── Validasi dokumen ───
+    const docFiles: Partial<Record<DocType, IncomingFile>> = {};
+    const docErrors: Array<{ field: string; message: string }> = [];
+
+    for (const doc of DOC_CONFIGS) {
+      const file = getFormFile(fd, doc.type);
+      const required = isDocRequired(doc.type, payload.posisi_dilamar);
+
+      if (!file) {
+        if (required) docErrors.push({ field: `doc_${doc.type}`, message: `${doc.label} wajib dilampirkan.` });
+        continue;
+      }
+
+      const type = file.type ?? "";
+      if (!ALLOWED_DOC_TYPES.includes(type)) {
+        docErrors.push({ field: `doc_${doc.type}`, message: `${doc.label} harus berupa JPG/PNG.` });
+        continue;
+      }
+
+      if (file.size > MAX_DOC_SIZE_BYTES) {
+        docErrors.push({ field: `doc_${doc.type}`, message: `${doc.label} maksimal ${MAX_DOC_SIZE_MB} MB.` });
+        continue;
+      }
+
+      docFiles[doc.type] = file;
     }
 
-    const f = cvFile as Blob & { name?: string; type?: string };
-    if (f.size > MAX_CV_SIZE_BYTES) {
-      return NextResponse.json({ error: "Ukuran file melebihi 5 MB." }, { status: 400 });
+    if (docErrors.length > 0) {
+      return NextResponse.json({ error: "Validasi dokumen gagal", fieldErrors: docErrors }, { status: 400 });
     }
-    
-    const fileType = f.type ?? "";
-    if (!ALLOWED_CV_TYPES.includes(fileType)) {
-      return NextResponse.json(
-        { error: "Tipe file tidak diperbolehkan (hanya PDF/JPG/PNG)." },
-        { status: 400 },
-      );
-    }
-    
-    cvBlob = f;
-    cvName = f.name ?? "cv";
-    cvType = fileType;
 
     // ─── Insert recruitment ───
     const admin = createAdminClient();
@@ -88,7 +108,6 @@ export async function POST(req: NextRequest) {
       pendidikan_terakhir: payload.pendidikan_terakhir!,
       pengalaman_kerja: payload.pekerjaan_terakhir?.trim() || null,
       alamat: payload.alamat!.trim(),
-      sim: payload.sim || null,
       status: "Lamaran Masuk" as const,
       catatan: null,
       tanggal_lahir: payload.tanggal_lahir!,
@@ -117,36 +136,54 @@ export async function POST(req: NextRequest) {
 
     const recruitmentId = inserted.id as number;
 
-    // ─── Upload CV (kalau ada) ───
-    let cvUrl: string | null = null;
-    if (cvBlob && cvType) {
-      const ext = cvType === "application/pdf" ? "pdf"
-        : cvType === "image/png" ? "png"
-        : "jpg";
-      // Path: lamaran/{id}_{timestamp}.{ext}
-      const path = `lamaran/${recruitmentId}_${Date.now()}.${ext}`;
+    // ─── Upload dokumen ───
+    const uploadedPaths: string[] = [];
+    const urlUpdates: Record<string, string> = {};
+
+    for (const doc of DOC_CONFIGS) {
+      const file = docFiles[doc.type];
+      if (!file) continue;
+
+      const ext = fileExt(file.type ?? "");
+      const path = `${doc.folder}/${recruitmentId}-${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await admin.storage
         .from(BUCKET)
-        .upload(path, cvBlob, { contentType: cvType, upsert: false });
+        .upload(path, file, { contentType: file.type, upsert: false });
 
       if (upErr) {
-        // Rollback: hapus data lamaran yang baru saja masuk karena file gagal terupload
+        if (uploadedPaths.length > 0) await admin.storage.from(BUCKET).remove(uploadedPaths);
         await admin.from("recruitments").delete().eq("id", recruitmentId);
-        return NextResponse.json({ error: "Gagal menyimpan file CV ke Storage Supabase: " + upErr.message }, { status: 500 });
-      } else {
-        const { data: pub } = admin.storage.from(BUCKET).getPublicUrl(path);
-        cvUrl = pub.publicUrl;
-        await admin
-          .from("recruitments")
-          .update({ cv_url: cvUrl })
-          .eq("id", recruitmentId);
+        return NextResponse.json(
+          { error: `Gagal menyimpan ${doc.label} ke Storage Supabase: ${upErr.message}` },
+          { status: 500 },
+        );
+      }
+
+      uploadedPaths.push(path);
+      const { data: pub } = admin.storage.from(BUCKET).getPublicUrl(path);
+      urlUpdates[doc.urlColumn] = pub.publicUrl;
+    }
+
+    if (Object.keys(urlUpdates).length > 0) {
+      const { error: updateErr } = await admin
+        .from("recruitments")
+        .update(urlUpdates)
+        .eq("id", recruitmentId);
+
+      if (updateErr) {
+        if (uploadedPaths.length > 0) await admin.storage.from(BUCKET).remove(uploadedPaths);
+        await admin.from("recruitments").delete().eq("id", recruitmentId);
+        return NextResponse.json(
+          { error: "Dokumen berhasil diupload, tapi gagal menyimpan URL dokumen: " + updateErr.message },
+          { status: 500 },
+        );
       }
     }
 
     return NextResponse.json({
       success: true,
       id: recruitmentId,
-      cv_uploaded: cvUrl !== null,
+      uploaded: Object.fromEntries(DOC_CONFIGS.map((doc) => [doc.type, Boolean(urlUpdates[doc.urlColumn])])),
     });
   } catch (err) {
     console.error("[lamar] unexpected error:", err);

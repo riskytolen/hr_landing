@@ -49,6 +49,13 @@ export default function Select({
     ? options.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
     : options;
 
+  const openDropdown = useCallback(() => {
+    const idx = options.findIndex((o) => o.value === value);
+    setHighlightIdx(idx >= 0 ? idx : 0);
+    setSearch("");
+    setOpen(true);
+  }, [options, value]);
+
   // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -61,16 +68,12 @@ export default function Select({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  // Focus search saat dropdown buka, set highlight ke value yg terpilih
+  // Focus search saat dropdown buka
   useEffect(() => {
-    if (!open) return;
-    if (isSearchable) {
-      setTimeout(() => searchRef.current?.focus(), 50);
-    }
-    const idx = filtered.findIndex((o) => o.value === value);
-    setHighlightIdx(idx >= 0 ? idx : 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    if (!open || !isSearchable) return;
+    const timer = setTimeout(() => searchRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, [open, isSearchable]);
 
   // Scroll highlighted item into view
   useEffect(() => {
@@ -94,7 +97,7 @@ export default function Select({
     if (!open) {
       if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
         e.preventDefault();
-        setOpen(true);
+        openDropdown();
       }
       return;
     }
@@ -132,9 +135,12 @@ export default function Select({
         type="button"
         disabled={disabled}
         onClick={() => {
-          if (!disabled) {
-            setOpen(!open);
+          if (disabled) return;
+          if (open) {
+            setOpen(false);
             setSearch("");
+          } else {
+            openDropdown();
           }
         }}
         className={cn(

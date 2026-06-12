@@ -79,7 +79,7 @@ export default function LandingPage() {
 
             {/* Description */}
             <p className="animate-fade-in delay-200 text-slate-600 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
-              Kami mencari Driver dan Helper berdedikasi untuk pengiriman area Jabodetabek. 
+              Kami membuka lamaran untuk Driver, Helper, Staf Office, dan Maintenance. 
               Isi formulir, tim HR akan menghubungi Anda.
             </p>
 
@@ -102,7 +102,7 @@ export default function LandingPage() {
           {/* Info Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <InfoCard icon={MapPin} label="Area Kerja" value="Jabodetabek" delay="delay-100" />
-            <InfoCard icon={Truck} label="Posisi" value="Driver & Helper" delay="delay-200" />
+            <InfoCard icon={Truck} label="Posisi" value="4 Posisi" delay="delay-200" />
             <InfoCard icon={Clock} label="Sistem Kerja" value="Shift" delay="delay-300" />
             <InfoCard icon={Zap} label="Proses" value="Cepat" delay="delay-400" />
           </div>

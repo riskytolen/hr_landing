@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Karir Jamslogistic — Bergabung Bersama Kami",
   description:
-    "Jadi bagian dari tim Jamslogistic. Daftar sebagai Driver atau Helper untuk pengiriman di area Jabodetabek. Proses lamaran cepat, langsung diproses oleh tim HR.",
+    "Jadi bagian dari tim Jamslogistic. Daftar sebagai Driver, Helper, Staf Office, atau Maintenance. Proses lamaran cepat, langsung diproses oleh tim HR.",
   robots: { index: true, follow: true },
 };
 

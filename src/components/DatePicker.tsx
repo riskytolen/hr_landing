@@ -63,6 +63,8 @@ export default function DatePicker({
   // Saat value berubah dari luar, sync view ke bulan dari value
   useEffect(() => {
     if (selected) {
+      // Sinkronisasi view kalender terhadap value controlled dari parent.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setViewYear(selected.getFullYear());
       setViewMonth(selected.getMonth());
     }

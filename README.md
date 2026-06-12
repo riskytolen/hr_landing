@@ -39,17 +39,29 @@ Public landing page untuk pelamar kerja. Form submission langsung masuk ke tabel
 
 - `/` — Landing + form lamaran
 - `/sukses` — Halaman thank-you setelah submit
-- `/api/lamar` — POST endpoint, validasi + upload CV + insert ke DB
+- `/api/lamar` — POST endpoint, validasi + upload dokumen pelamar + insert ke DB
 
 ## Keamanan
 
 - Service-role key hanya dipakai di server route (`/api/lamar`).
 - Rate limit: 1 submit per IP per 60 detik (in-memory).
 - Honeypot field anti-bot.
-- Validasi server-side untuk semua field + file (mime + size 2 MB).
+- Validasi server-side untuk semua field + dokumen (JPG/PNG + size 2 MB).
+- Auto-compress gambar di client sebelum submit.
+- Dokumen wajib: CV, KTP, Pas Foto. SIM Mobil wajib khusus posisi Driver.
 
 ## Database
 
 Project Supabase yang dipakai sama dengan HR Web. Tabel yang dipakai:
 - `recruitments` — insert dengan `sumber_lamaran = 'landing'`
-- Storage bucket `recruitment-docs` — upload CV ke folder `lamaran/`
+- Storage bucket `recruitment-docs` — upload dokumen ke folder:
+  - `cv/`
+  - `ktp/`
+  - `pas-foto/`
+  - `sim/`
+
+Kolom dokumen yang diisi:
+- `cv_url`
+- `ktp_url`
+- `pas_foto_url`
+- `sim_url` (khusus Driver jika upload SIM Mobil)
